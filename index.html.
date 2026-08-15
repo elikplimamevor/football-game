@@ -21,7 +21,6 @@
       width: 100vw;
       height: 100vh;
       background: #444;
-      padding: 60px;
       position: relative;
     }
 
@@ -49,7 +48,6 @@
       box-shadow: 0 0 30px #000;
     }
 
-    /* Centre line */
     .pitch::before {
       content: "";
       position: absolute;
@@ -61,7 +59,6 @@
       transform: translateX(-50%);
     }
 
-    /* Centre circle */
     .center-circle {
       position: absolute;
       left: 50%;
@@ -84,7 +81,6 @@
       transform: translate(-50%, -50%);
     }
 
-    /* Goals */
     .goal {
       position: absolute;
       top: 35%;
@@ -102,7 +98,6 @@
       right: -45px;
     }
 
-    /* Penalty areas */
     .penalty {
       position: absolute;
       top: 25%;
@@ -121,10 +116,33 @@
       border-right: none;
     }
 
-    /* Ball */
+    /* PLAYER */
+
+    #player {
+      position: absolute;
+      left: 45%;
+      top: 45%;
+      width: 35px;
+      height: 50px;
+      background: #1877f2;
+      border-radius: 12px 12px 8px 8px;
+      z-index: 10;
+    }
+
+    #player::before {
+      content: "";
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      background: #f1c27d;
+      border-radius: 50%;
+      top: -22px;
+      left: 5px;
+    }
+
     .ball {
       position: absolute;
-      left: 50%;
+      left: 52%;
       top: 50%;
       width: 28px;
       height: 28px;
@@ -142,7 +160,19 @@
       color: white;
       font-size: 28px;
       font-weight: bold;
-      z-index: 5;
+      z-index: 20;
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      background: rgba(0,0,0,0.7);
+      padding: 10px 20px;
+      border-radius: 10px;
+      z-index: 20;
     }
   </style>
 </head>
@@ -168,11 +198,68 @@
       <div class="center-circle"></div>
       <div class="center-dot"></div>
 
+      <div id="player"></div>
+
       <div class="ball"></div>
 
     </div>
 
+    <div class="controls">
+      🎮 Move: W A S D / Arrow Keys
+    </div>
+
   </div>
+
+  <script>
+
+    const player = document.getElementById("player");
+
+    let x = 45;
+    let y = 45;
+
+    const speed = 1.5;
+
+    const keys = {};
+
+    document.addEventListener("keydown", function(event) {
+      keys[event.key.toLowerCase()] = true;
+    });
+
+    document.addEventListener("keyup", function(event) {
+      keys[event.key.toLowerCase()] = false;
+    });
+
+    function movePlayer() {
+
+      if (keys["w"] || keys["arrowup"]) {
+        y -= speed;
+      }
+
+      if (keys["s"] || keys["arrowdown"]) {
+        y += speed;
+      }
+
+      if (keys["a"] || keys["arrowleft"]) {
+        x -= speed;
+      }
+
+      if (keys["d"] || keys["arrowright"]) {
+        x += speed;
+      }
+
+      // Keep player inside the pitch
+      x = Math.max(0, Math.min(97, x));
+      y = Math.max(0, Math.min(88, y));
+
+      player.style.left = x + "%";
+      player.style.top = y + "%";
+
+      requestAnimationFrame(movePlayer);
+    }
+
+    movePlayer();
+
+  </script>
 
 </body>
 </html>
