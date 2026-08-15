@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Game</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #222;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .stadium {
+      width: 100vw;
+      height: 100vh;
+      background: #444;
+      padding: 60px;
+      position: relative;
+    }
+
+    .stands {
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #333 0px,
+          #333 30px,
+          #444 30px,
+          #444 60px
+        );
+    }
+
+    .pitch {
+      position: absolute;
+      left: 8%;
+      top: 10%;
+      width: 84%;
+      height: 80%;
+      background: #168a35;
+      border: 6px solid white;
+      box-shadow: 0 0 30px #000;
+    }
+
+    /* Centre line */
+    .pitch::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 5px;
+      height: 100%;
+      background: white;
+      transform: translateX(-50%);
+    }
+
+    /* Centre circle */
+    .center-circle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 150px;
+      height: 150px;
+      border: 5px solid white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .center-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Goals */
+    .goal {
+      position: absolute;
+      top: 35%;
+      width: 45px;
+      height: 30%;
+      border: 5px solid white;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .goal.left {
+      left: -45px;
+    }
+
+    .goal.right {
+      right: -45px;
+    }
+
+    /* Penalty areas */
+    .penalty {
+      position: absolute;
+      top: 25%;
+      width: 14%;
+      height: 50%;
+      border: 5px solid white;
+    }
+
+    .penalty.left {
+      left: 0;
+      border-left: none;
+    }
+
+    .penalty.right {
+      right: 0;
+      border-right: none;
+    }
+
+    /* Ball */
+    .ball {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 28px;
+      height: 28px;
+      background: white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 3px 8px #222;
+    }
+
+    .title {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      z-index: 5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="stadium">
+
+    <div class="stands"></div>
+
+    <div class="title">
+      ⚽ FOOTBALL GAME
+    </div>
+
+    <div class="pitch">
+
+      <div class="goal left"></div>
+      <div class="goal right"></div>
+
+      <div class="penalty left"></div>
+      <div class="penalty right"></div>
+
+      <div class="center-circle"></div>
+      <div class="center-dot"></div>
+
+      <div class="ball"></div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
