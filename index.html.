@@ -1,265 +1,380 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Football Game</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Football Game</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      background: #222;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
+body {
+  margin: 0;
+  background: #222;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
 
-    .stadium {
-      width: 100vw;
-      height: 100vh;
-      background: #444;
-      position: relative;
-    }
+.stadium {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: #444;
+}
 
-    .stands {
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          90deg,
-          #333 0px,
-          #333 30px,
-          #444 30px,
-          #444 60px
-        );
-    }
+.stands {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #333 0px,
+      #333 30px,
+      #444 30px,
+      #444 60px
+    );
+}
 
-    .pitch {
-      position: absolute;
-      left: 8%;
-      top: 10%;
-      width: 84%;
-      height: 80%;
-      background: #168a35;
-      border: 6px solid white;
-      box-shadow: 0 0 30px #000;
-    }
+.pitch {
+  position: absolute;
+  left: 8%;
+  top: 10%;
+  width: 84%;
+  height: 80%;
+  background: #168a35;
+  border: 6px solid white;
+  box-shadow: 0 0 30px #000;
+  overflow: hidden;
+}
 
-    .pitch::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 0;
-      width: 5px;
-      height: 100%;
-      background: white;
-      transform: translateX(-50%);
-    }
+.pitch::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  background: white;
+  transform: translateX(-50%);
+}
 
-    .center-circle {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 150px;
-      height: 150px;
-      border: 5px solid white;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-    }
+.center-circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150px;
+  height: 150px;
+  border: 5px solid white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
 
-    .center-dot {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 12px;
-      height: 12px;
-      background: white;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-    }
+.center-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
 
-    .goal {
-      position: absolute;
-      top: 35%;
-      width: 45px;
-      height: 30%;
-      border: 5px solid white;
-      background: rgba(255,255,255,0.15);
-    }
+.goal {
+  position: absolute;
+  top: 35%;
+  width: 45px;
+  height: 30%;
+  border: 5px solid white;
+  background: rgba(255,255,255,0.15);
+  z-index: 2;
+}
 
-    .goal.left {
-      left: -45px;
-    }
+.goal.left {
+  left: -45px;
+}
 
-    .goal.right {
-      right: -45px;
-    }
+.goal.right {
+  right: -45px;
+}
 
-    .penalty {
-      position: absolute;
-      top: 25%;
-      width: 14%;
-      height: 50%;
-      border: 5px solid white;
-    }
+.penalty {
+  position: absolute;
+  top: 25%;
+  width: 14%;
+  height: 50%;
+  border: 5px solid white;
+}
 
-    .penalty.left {
-      left: 0;
-      border-left: none;
-    }
+.penalty.left {
+  left: 0;
+  border-left: none;
+}
 
-    .penalty.right {
-      right: 0;
-      border-right: none;
-    }
+.penalty.right {
+  right: 0;
+  border-right: none;
+}
 
-    /* PLAYER */
+/* PLAYER */
 
-    #player {
-      position: absolute;
-      left: 45%;
-      top: 45%;
-      width: 35px;
-      height: 50px;
-      background: #1877f2;
-      border-radius: 12px 12px 8px 8px;
-      z-index: 10;
-    }
+#player {
+  position: absolute;
+  left: 45%;
+  top: 45%;
+  width: 35px;
+  height: 50px;
+  background: #1877f2;
+  border-radius: 12px 12px 8px 8px;
+  z-index: 10;
+}
 
-    #player::before {
-      content: "";
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      background: #f1c27d;
-      border-radius: 50%;
-      top: -22px;
-      left: 5px;
-    }
+#player::before {
+  content: "";
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background: #f1c27d;
+  border-radius: 50%;
+  top: -22px;
+  left: 5px;
+}
 
-    .ball {
-      position: absolute;
-      left: 52%;
-      top: 50%;
-      width: 28px;
-      height: 28px;
-      background: white;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 3px 8px #222;
-    }
+/* BALL */
 
-    .title {
-      position: absolute;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-size: 28px;
-      font-weight: bold;
-      z-index: 20;
-    }
+#ball {
+  position: absolute;
+  left: 52%;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  background: white;
+  border: 2px solid #111;
+  border-radius: 50%;
+  z-index: 9;
+  transition: transform 0.1s;
+}
 
-    .controls {
-      position: absolute;
-      bottom: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      background: rgba(0,0,0,0.7);
-      padding: 10px 20px;
-      border-radius: 10px;
-      z-index: 20;
-    }
-  </style>
+.title {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  z-index: 20;
+}
+
+.controls {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  background: rgba(0,0,0,0.75);
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 20;
+}
+
+#message {
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  background: rgba(0,0,0,0.7);
+  padding: 8px 15px;
+  border-radius: 8px;
+  z-index: 20;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="stadium">
+<div class="stadium">
 
-    <div class="stands"></div>
+  <div class="stands"></div>
 
-    <div class="title">
-      ⚽ FOOTBALL GAME
-    </div>
+  <div class="title">⚽ FOOTBALL GAME</div>
 
-    <div class="pitch">
+  <div id="message">
+    Get close to the ball and press SPACE to kick!
+  </div>
 
-      <div class="goal left"></div>
-      <div class="goal right"></div>
+  <div class="pitch">
 
-      <div class="penalty left"></div>
-      <div class="penalty right"></div>
+    <div class="goal left"></div>
+    <div class="goal right"></div>
 
-      <div class="center-circle"></div>
-      <div class="center-dot"></div>
+    <div class="penalty left"></div>
+    <div class="penalty right"></div>
 
-      <div id="player"></div>
+    <div class="center-circle"></div>
+    <div class="center-dot"></div>
 
-      <div class="ball"></div>
+    <div id="player"></div>
 
-    </div>
-
-    <div class="controls">
-      🎮 Move: W A S D / Arrow Keys
-    </div>
+    <div id="ball"></div>
 
   </div>
 
-  <script>
+  <div class="controls">
+    🎮 Move: W A S D / Arrow Keys &nbsp; | &nbsp; ⚽ Kick: SPACE
+  </div>
 
-    const player = document.getElementById("player");
+</div>
 
-    let x = 45;
-    let y = 45;
+<script>
 
-    const speed = 1.5;
+const player = document.getElementById("player");
+const ball = document.getElementById("ball");
+const message = document.getElementById("message");
 
-    const keys = {};
+let playerX = 45;
+let playerY = 45;
 
-    document.addEventListener("keydown", function(event) {
-      keys[event.key.toLowerCase()] = true;
-    });
+let ballX = 52;
+let ballY = 50;
 
-    document.addEventListener("keyup", function(event) {
-      keys[event.key.toLowerCase()] = false;
-    });
+let ballVelocityX = 0;
+let ballVelocityY = 0;
 
-    function movePlayer() {
+const speed = 1.5;
+const kickPower = 4;
 
-      if (keys["w"] || keys["arrowup"]) {
-        y -= speed;
-      }
+const keys = {};
 
-      if (keys["s"] || keys["arrowdown"]) {
-        y += speed;
-      }
+document.addEventListener("keydown", function(event) {
 
-      if (keys["a"] || keys["arrowleft"]) {
-        x -= speed;
-      }
+  keys[event.key.toLowerCase()] = true;
 
-      if (keys["d"] || keys["arrowright"]) {
-        x += speed;
-      }
+  if (event.code === "Space") {
+    kickBall();
+  }
 
-      // Keep player inside the pitch
-      x = Math.max(0, Math.min(97, x));
-      y = Math.max(0, Math.min(88, y));
+});
 
-      player.style.left = x + "%";
-      player.style.top = y + "%";
+document.addEventListener("keyup", function(event) {
+  keys[event.key.toLowerCase()] = false;
+});
 
-      requestAnimationFrame(movePlayer);
+function kickBall() {
+
+  const distanceX = ballX - playerX;
+  const distanceY = ballY - playerY;
+
+  const distance = Math.sqrt(
+    distanceX * distanceX +
+    distanceY * distanceY
+  );
+
+  // Player must be close to the ball
+  if (distance < 10) {
+
+    let directionX = distanceX;
+    let directionY = distanceY;
+
+    const length = Math.sqrt(
+      directionX * directionX +
+      directionY * directionY
+    );
+
+    if (length > 0) {
+      directionX /= length;
+      directionY /= length;
     }
 
-    movePlayer();
+    ballVelocityX = directionX * kickPower;
+    ballVelocityY = directionY * kickPower;
 
-  </script>
+    message.textContent = "💥 KICK!";
+
+    setTimeout(function() {
+      message.textContent =
+        "Get close to the ball and press SPACE to kick!";
+    }, 700);
+  }
+
+}
+
+function update() {
+
+  // PLAYER MOVEMENT
+
+  if (keys["w"] || keys["arrowup"]) {
+    playerY -= speed;
+  }
+
+  if (keys["s"] || keys["arrowdown"]) {
+    playerY += speed;
+  }
+
+  if (keys["a"] || keys["arrowleft"]) {
+    playerX -= speed;
+  }
+
+  if (keys["d"] || keys["arrowright"]) {
+    playerX += speed;
+  }
+
+  // Keep player on pitch
+
+  playerX = Math.max(2, Math.min(95, playerX));
+  playerY = Math.max(2, Math.min(88, playerY));
+
+  player.style.left = playerX + "%";
+  player.style.top = playerY + "%";
+
+
+  // BALL MOVEMENT
+
+  ballX += ballVelocityX;
+  ballY += ballVelocityY;
+
+  // Friction
+
+  ballVelocityX *= 0.96;
+  ballVelocityY *= 0.96;
+
+  // Keep ball on pitch
+
+  if (ballX < 1) {
+    ballX = 1;
+    ballVelocityX *= -0.6;
+  }
+
+  if (ballX > 97) {
+    ballX = 97;
+    ballVelocityX *= -0.6;
+  }
+
+  if (ballY < 1) {
+    ballY = 1;
+    ballVelocityY *= -0.6;
+  }
+
+  if (ballY > 96) {
+    ballY = 96;
+    ballVelocityY *= -0.6;
+  }
+
+  ball.style.left = ballX + "%";
+  ball.style.top = ballY + "%";
+
+
+  requestAnimationFrame(update);
+}
+
+update();
+
+</script>
 
 </body>
 </html>
