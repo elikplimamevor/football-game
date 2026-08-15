@@ -1,5 +1,7 @@
 
 
+
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -156,17 +158,43 @@ body {
   border: 2px solid #111;
   border-radius: 50%;
   z-index: 9;
-  transition: transform 0.1s;
 }
 
-.title {
+/* SCOREBOARD */
+
+.scoreboard {
   position: absolute;
   top: 15px;
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  font-size: 28px;
+  background: rgba(0,0,0,0.85);
+  padding: 10px 25px;
+  border-radius: 12px;
+  z-index: 30;
+  text-align: center;
   font-weight: bold;
+}
+
+.score {
+  font-size: 28px;
+}
+
+.teams {
+  font-size: 14px;
+}
+
+/* MESSAGE */
+
+#message {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  background: rgba(0,0,0,0.75);
+  padding: 8px 15px;
+  border-radius: 8px;
   z-index: 20;
 }
 
@@ -181,18 +209,6 @@ body {
   border-radius: 10px;
   z-index: 20;
 }
-
-#message {
-  position: absolute;
-  top: 55px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: white;
-  background: rgba(0,0,0,0.7);
-  padding: 8px 15px;
-  border-radius: 8px;
-  z-index: 20;
-}
 </style>
 </head>
 
@@ -202,10 +218,24 @@ body {
 
   <div class="stands"></div>
 
-  <div class="title">⚽ FOOTBALL GAME</div>
+  <!-- SCOREBOARD -->
+
+  <div class="scoreboard">
+
+    <div class="teams">
+      BLUE FC &nbsp; VS &nbsp; RED FC
+    </div>
+
+    <div class="score">
+      <span id="blueScore">0</span>
+      -
+      <span id="redScore">0</span>
+    </div>
+
+  </div>
 
   <div id="message">
-    Get close to the ball and press SPACE to kick!
+    ⚽ Get close to the ball and press SPACE!
   </div>
 
   <div class="pitch">
@@ -226,7 +256,7 @@ body {
   </div>
 
   <div class="controls">
-    🎮 Move: W A S D / Arrow Keys &nbsp; | &nbsp; ⚽ Kick: SPACE
+    🎮 Move: W A S D / Arrows &nbsp; | &nbsp; ⚽ Kick: SPACE
   </div>
 
 </div>
@@ -235,7 +265,15 @@ body {
 
 const player = document.getElementById("player");
 const ball = document.getElementById("ball");
-const message = document.getElementById("message");
+
+const blueScoreDisplay =
+  document.getElementById("blueScore");
+
+const redScoreDisplay =
+  document.getElementById("redScore");
+
+const message =
+  document.getElementById("message");
 
 let playerX = 45;
 let playerY = 45;
@@ -245,6 +283,9 @@ let ballY = 50;
 
 let ballVelocityX = 0;
 let ballVelocityY = 0;
+
+let blueScore = 0;
+let redScore = 0;
 
 const speed = 1.5;
 const kickPower = 4;
@@ -262,8 +303,11 @@ document.addEventListener("keydown", function(event) {
 });
 
 document.addEventListener("keyup", function(event) {
+
   keys[event.key.toLowerCase()] = false;
+
 });
+
 
 function kickBall() {
 
@@ -275,7 +319,6 @@ function kickBall() {
     distanceY * distanceY
   );
 
-  // Player must be close to the ball
   if (distance < 10) {
 
     let directionX = distanceX;
@@ -287,8 +330,10 @@ function kickBall() {
     );
 
     if (length > 0) {
+
       directionX /= length;
       directionY /= length;
+
     }
 
     ballVelocityX = directionX * kickPower;
@@ -297,12 +342,82 @@ function kickBall() {
     message.textContent = "💥 KICK!";
 
     setTimeout(function() {
+
       message.textContent =
-        "Get close to the ball and press SPACE to kick!";
+        "⚽ Get close to the ball and press SPACE!";
+
     }, 700);
+
   }
 
 }
+
+
+function checkGoal() {
+
+  /*
+    RIGHT GOAL
+    Blue FC scores
+  */
+
+  if (
+    ballX >= 96 &&
+    ballY >= 35 &&
+    ballY <= 65
+  ) {
+
+    blueScore++;
+
+    blueScoreDisplay.textContent =
+      blueScore;
+
+    goalScored("🔵 BLUE FC SCORES!");
+
+  }
+
+
+  /*
+    LEFT GOAL
+    Red FC scores
+  */
+
+  if (
+    ballX <= 2 &&
+    ballY >= 35 &&
+    ballY <= 65
+  ) {
+
+    redScore++;
+
+    redScoreDisplay.textContent =
+      redScore;
+
+    goalScored("🔴 RED FC SCORES!");
+
+  }
+
+}
+
+
+function goalScored(text) {
+
+  message.textContent = "🎉 GOAL! " + text;
+
+  ballX = 52;
+  ballY = 50;
+
+  ballVelocityX = 0;
+  ballVelocityY = 0;
+
+  setTimeout(function() {
+
+    message.textContent =
+      "⚽ Play continues!";
+
+  }, 1500);
+
+}
+
 
 function update() {
 
@@ -324,13 +439,21 @@ function update() {
     playerX += speed;
   }
 
-  // Keep player on pitch
 
-  playerX = Math.max(2, Math.min(95, playerX));
-  playerY = Math.max(2, Math.min(88, playerY));
+  // Keep player inside pitch
 
-  player.style.left = playerX + "%";
-  player.style.top = playerY + "%";
+  playerX =
+    Math.max(2, Math.min(95, playerX));
+
+  playerY =
+    Math.max(2, Math.min(88, playerY));
+
+
+  player.style.left =
+    playerX + "%";
+
+  player.style.top =
+    playerY + "%";
 
 
   // BALL MOVEMENT
@@ -338,43 +461,65 @@ function update() {
   ballX += ballVelocityX;
   ballY += ballVelocityY;
 
+
   // Friction
 
   ballVelocityX *= 0.96;
   ballVelocityY *= 0.96;
 
-  // Keep ball on pitch
 
-  if (ballX < 1) {
-    ballX = 1;
+  // GOAL CHECK
+
+  checkGoal();
+
+
+  // Ball boundaries
+
+  if (ballX < 0) {
+
+    ballX = 0;
     ballVelocityX *= -0.6;
+
   }
 
-  if (ballX > 97) {
-    ballX = 97;
+  if (ballX > 100) {
+
+    ballX = 100;
     ballVelocityX *= -0.6;
+
   }
 
   if (ballY < 1) {
+
     ballY = 1;
     ballVelocityY *= -0.6;
+
   }
 
   if (ballY > 96) {
+
     ballY = 96;
     ballVelocityY *= -0.6;
+
   }
 
-  ball.style.left = ballX + "%";
-  ball.style.top = ballY + "%";
+
+  ball.style.left =
+    ballX + "%";
+
+  ball.style.top =
+    ballY + "%";
 
 
   requestAnimationFrame(update);
+
 }
 
 update();
 
 </script>
 
+</body>
+</html>
 </body>
 </html>
