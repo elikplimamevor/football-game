@@ -1,13 +1,9 @@
-
-
-
-</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Football Game</title>
+<title>Football Championship</title>
 
 <style>
 * {
@@ -16,255 +12,617 @@
 
 body {
   margin: 0;
-  background: #222;
   font-family: Arial, sans-serif;
+  background: #111;
   overflow: hidden;
 }
 
-.stadium {
+/* ================= MENU ================= */
+
+#menu {
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.8)),
+    repeating-linear-gradient(
+      90deg,
+      #222 0px,
+      #222 40px,
+      #333 40px,
+      #333 80px
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 100;
+}
+
+.menuBox {
+  width: 420px;
+  max-width: 90%;
+  padding: 35px;
+  background: rgba(0,0,0,.9);
+  border-radius: 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 0 40px black;
+}
+
+.menuBox h1 {
+  font-size: 42px;
+  margin: 0 0 10px;
+}
+
+.menuBox p {
+  color: #ddd;
+}
+
+.teamButtons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin: 25px 0;
+}
+
+.teamButton {
+  border: 3px solid white;
+  padding: 15px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.blueTeam {
+  background: #1268e8;
+}
+
+.redTeam {
+  background: #d71920;
+}
+
+#startButton {
+  border: none;
+  background: #18a558;
+  color: white;
+  padding: 15px 45px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#startButton:hover {
+  transform: scale(1.05);
+}
+
+/* ================= GAME ================= */
+
+#game {
   width: 100vw;
   height: 100vh;
   position: relative;
-  background: #444;
+  background: #333;
 }
 
 .stands {
   position: absolute;
   inset: 0;
+
   background:
     repeating-linear-gradient(
       90deg,
       #333 0px,
-      #333 30px,
-      #444 30px,
-      #444 60px
+      #333 35px,
+      #444 35px,
+      #444 70px
     );
 }
 
+.stadiumLights {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+
+  background:
+    radial-gradient(circle, white 0 4px, transparent 5px);
+
+  background-size: 50px 50px;
+}
+
+/* ================= PITCH ================= */
+
 .pitch {
   position: absolute;
-  left: 8%;
-  top: 10%;
-  width: 84%;
-  height: 80%;
-  background: #168a35;
+
+  left: 7%;
+  top: 12%;
+
+  width: 86%;
+  height: 76%;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #159447 0px,
+      #159447 90px,
+      #12833d 90px,
+      #12833d 180px
+    );
+
   border: 6px solid white;
-  box-shadow: 0 0 30px #000;
+
+  box-shadow: 0 0 35px black;
+
   overflow: hidden;
 }
 
+/* center line */
+
 .pitch::before {
   content: "";
+
   position: absolute;
+
   left: 50%;
   top: 0;
+
   width: 5px;
   height: 100%;
+
   background: white;
+
   transform: translateX(-50%);
 }
 
-.center-circle {
+/* center circle */
+
+.centerCircle {
   position: absolute;
+
   left: 50%;
   top: 50%;
+
   width: 150px;
   height: 150px;
+
   border: 5px solid white;
+
   border-radius: 50%;
+
   transform: translate(-50%, -50%);
 }
 
-.center-dot {
+.centerDot {
   position: absolute;
+
   left: 50%;
   top: 50%;
+
   width: 12px;
   height: 12px;
+
   background: white;
+
   border-radius: 50%;
+
   transform: translate(-50%, -50%);
 }
+
+/* ================= GOALS ================= */
 
 .goal {
   position: absolute;
-  top: 35%;
-  width: 45px;
-  height: 30%;
+
+  top: 34%;
+
+  width: 50px;
+  height: 32%;
+
   border: 5px solid white;
-  background: rgba(255,255,255,0.15);
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(255,255,255,.25) 9px
+    );
+
   z-index: 2;
 }
 
-.goal.left {
-  left: -45px;
+.leftGoal {
+  left: -50px;
 }
 
-.goal.right {
-  right: -45px;
+.rightGoal {
+  right: -50px;
 }
 
-.penalty {
+/* ================= PLAYERS ================= */
+
+.player {
   position: absolute;
-  top: 25%;
-  width: 14%;
-  height: 50%;
-  border: 5px solid white;
+
+  width: 34px;
+  height: 45px;
+
+  border-radius: 10px;
+
+  z-index: 20;
 }
 
-.penalty.left {
-  left: 0;
-  border-left: none;
-}
-
-.penalty.right {
-  right: 0;
-  border-right: none;
-}
-
-/* PLAYER */
-
-#player {
-  position: absolute;
-  left: 45%;
-  top: 45%;
-  width: 35px;
-  height: 50px;
-  background: #1877f2;
-  border-radius: 12px 12px 8px 8px;
-  z-index: 10;
-}
-
-#player::before {
+.player::before {
   content: "";
+
   position: absolute;
-  width: 25px;
-  height: 25px;
+
+  width: 23px;
+  height: 23px;
+
   background: #f1c27d;
+
   border-radius: 50%;
-  top: -22px;
+
+  top: -20px;
   left: 5px;
 }
 
-/* BALL */
+.bluePlayer {
+  background: #1268e8;
+}
+
+.redPlayer {
+  background: #d71920;
+}
+
+#player {
+  width: 38px;
+  height: 50px;
+
+  border: 3px solid white;
+}
+
+/* ================= BALL ================= */
 
 #ball {
   position: absolute;
-  left: 52%;
-  top: 50%;
-  width: 28px;
-  height: 28px;
+
+  width: 26px;
+  height: 26px;
+
   background: white;
+
   border: 2px solid #111;
+
   border-radius: 50%;
-  z-index: 9;
+
+  z-index: 25;
+
+  box-shadow: 0 3px 7px black;
 }
 
-/* SCOREBOARD */
+/* ================= SCORE ================= */
 
 .scoreboard {
   position: absolute;
+
   top: 15px;
   left: 50%;
-  transform: translateX(-50%);
-  color: white;
-  background: rgba(0,0,0,0.85);
-  padding: 10px 25px;
-  border-radius: 12px;
-  z-index: 30;
-  text-align: center;
-  font-weight: bold;
-}
 
-.score {
-  font-size: 28px;
+  transform: translateX(-50%);
+
+  background: rgba(0,0,0,.9);
+
+  color: white;
+
+  padding: 8px 25px;
+
+  border-radius: 12px;
+
+  text-align: center;
+
+  z-index: 50;
 }
 
 .teams {
   font-size: 14px;
 }
 
-/* MESSAGE */
+.score {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#timer {
+  font-size: 18px;
+  margin-top: 3px;
+}
+
+/* ================= MESSAGE ================= */
 
 #message {
   position: absolute;
-  top: 90px;
+
+  top: 95px;
   left: 50%;
+
   transform: translateX(-50%);
+
+  background: rgba(0,0,0,.8);
+
   color: white;
-  background: rgba(0,0,0,0.75);
-  padding: 8px 15px;
-  border-radius: 8px;
-  z-index: 20;
+
+  padding: 10px 20px;
+
+  border-radius: 10px;
+
+  z-index: 50;
+
+  font-weight: bold;
 }
+
+/* ================= CONTROLS ================= */
 
 .controls {
   position: absolute;
-  bottom: 15px;
+
+  bottom: 12px;
   left: 50%;
+
   transform: translateX(-50%);
+
+  background: rgba(0,0,0,.8);
+
   color: white;
-  background: rgba(0,0,0,0.75);
+
   padding: 10px 20px;
+
   border-radius: 10px;
-  z-index: 20;
+
+  z-index: 50;
+
+  text-align: center;
+
+  font-size: 14px;
+}
+
+/* ================= END SCREEN ================= */
+
+#endScreen {
+  display: none;
+
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0,0,0,.9);
+
+  z-index: 200;
+
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+
+  text-align: center;
+}
+
+.endBox {
+  background: #111;
+
+  padding: 40px;
+
+  border-radius: 20px;
+}
+
+#restartButton {
+  padding: 14px 35px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #18a558;
+
+  color: white;
+
+  font-size: 18px;
+
+  cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="stadium">
+<!-- ================= START MENU ================= -->
+
+<div id="menu">
+
+  <div class="menuBox">
+
+    <h1>⚽ FOOTBALL CHAMPIONSHIP</h1>
+
+    <p>Select your team</p>
+
+    <div class="teamButtons">
+
+      <button
+        class="teamButton blueTeam"
+        onclick="selectTeam('blue')">
+        🔵 BLUE FC
+      </button>
+
+      <button
+        class="teamButton redTeam"
+        onclick="selectTeam('red')">
+        🔴 RED FC
+      </button>
+
+    </div>
+
+    <button id="startButton" onclick="startGame()">
+      START MATCH
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================= GAME ================= -->
+
+<div id="game">
 
   <div class="stands"></div>
 
-  <!-- SCOREBOARD -->
+  <div class="stadiumLights"></div>
 
   <div class="scoreboard">
 
     <div class="teams">
-      BLUE FC &nbsp; VS &nbsp; RED FC
+      🔵 BLUE FC &nbsp; VS &nbsp; 🔴 RED FC
     </div>
 
     <div class="score">
+
       <span id="blueScore">0</span>
+
       -
+
       <span id="redScore">0</span>
+
+    </div>
+
+    <div id="timer">
+      02:00
     </div>
 
   </div>
 
+
   <div id="message">
-    ⚽ Get close to the ball and press SPACE!
+    Get ready!
   </div>
+
 
   <div class="pitch">
 
-    <div class="goal left"></div>
-    <div class="goal right"></div>
+    <div class="goal leftGoal"></div>
 
-    <div class="penalty left"></div>
-    <div class="penalty right"></div>
+    <div class="goal rightGoal"></div>
 
-    <div class="center-circle"></div>
-    <div class="center-dot"></div>
+    <div class="centerCircle"></div>
 
-    <div id="player"></div>
+    <div class="centerDot"></div>
+
+
+    <!-- PLAYER -->
+
+    <div
+      id="player"
+      class="player bluePlayer">
+    </div>
+
+
+    <!-- TEAMMATES -->
+
+    <div
+      id="mate1"
+      class="player bluePlayer">
+    </div>
+
+    <div
+      id="mate2"
+      class="player bluePlayer">
+    </div>
+
+
+    <!-- OPPONENTS -->
+
+    <div
+      id="enemy1"
+      class="player redPlayer">
+    </div>
+
+    <div
+      id="enemy2"
+      class="player redPlayer">
+    </div>
+
+    <div
+      id="enemy3"
+      class="player redPlayer">
+    </div>
+
+
+    <!-- BALL -->
 
     <div id="ball"></div>
 
   </div>
 
+
   <div class="controls">
-    🎮 Move: W A S D / Arrows &nbsp; | &nbsp; ⚽ Kick: SPACE
+
+    🎮 W A S D / Arrow Keys = Move
+
+    &nbsp; | &nbsp;
+
+    ⚽ SPACE = Shoot
+
+    &nbsp; | &nbsp;
+
+    🅿️ P = Pass
+
   </div>
 
 </div>
 
+
+<!-- ================= END SCREEN ================= -->
+
+<div id="endScreen">
+
+  <div class="endBox">
+
+    <h1>🏆 MATCH FINISHED!</h1>
+
+    <h2 id="finalScore">
+      0 - 0
+    </h2>
+
+    <p id="winner">
+      DRAW
+    </p>
+
+    <button id="restartButton" onclick="location.reload()">
+      PLAY AGAIN
+    </button>
+
+  </div>
+
+</div>
+
+
 <script>
 
-const player = document.getElementById("player");
-const ball = document.getElementById("ball");
+/* ================= VARIABLES ================= */
+
+const player =
+  document.getElementById("player");
+
+const ball =
+  document.getElementById("ball");
+
+const message =
+  document.getElementById("message");
 
 const blueScoreDisplay =
   document.getElementById("blueScore");
@@ -272,35 +630,169 @@ const blueScoreDisplay =
 const redScoreDisplay =
   document.getElementById("redScore");
 
-const message =
-  document.getElementById("message");
+const timerDisplay =
+  document.getElementById("timer");
+
+const menu =
+  document.getElementById("menu");
+
+const endScreen =
+  document.getElementById("endScreen");
+
+const finalScore =
+  document.getElementById("finalScore");
+
+const winner =
+  document.getElementById("winner");
+
+
+let selectedTeam = "blue";
+
+let blueScore = 0;
+
+let redScore = 0;
+
+let matchTime = 120;
+
+let gameStarted = false;
+
+
+/* PLAYER */
 
 let playerX = 45;
-let playerY = 45;
 
-let ballX = 52;
+let playerY = 50;
+
+
+/* BALL */
+
+let ballX = 50;
+
 let ballY = 50;
 
 let ballVelocityX = 0;
+
 let ballVelocityY = 0;
 
-let blueScore = 0;
-let redScore = 0;
 
-const speed = 1.5;
-const kickPower = 4;
+/* OPPONENTS */
+
+let enemies = [
+
+  {
+    element: document.getElementById("enemy1"),
+    x: 70,
+    y: 40
+  },
+
+  {
+    element: document.getElementById("enemy2"),
+    x: 75,
+    y: 55
+  },
+
+  {
+    element: document.getElementById("enemy3"),
+    x: 65,
+    y: 70
+  }
+
+];
+
+
+/* TEAMMATES */
+
+let teammates = [
+
+  {
+    element: document.getElementById("mate1"),
+    x: 30,
+    y: 35
+  },
+
+  {
+    element: document.getElementById("mate2"),
+    x: 30,
+    y: 65
+  }
+
+];
+
 
 const keys = {};
+
+const speed = 1.4;
+
+
+/* ================= TEAM SELECT ================= */
+
+function selectTeam(team) {
+
+  selectedTeam = team;
+
+  if (team === "blue") {
+
+    message.textContent =
+      "🔵 You selected BLUE FC";
+
+  } else {
+
+    message.textContent =
+      "🔴 You selected RED FC";
+
+  }
+
+}
+
+
+/* ================= START GAME ================= */
+
+function startGame() {
+
+  menu.style.display = "none";
+
+  gameStarted = true;
+
+  message.textContent =
+    "⚽ MATCH STARTED!";
+
+  setTimeout(() => {
+
+    message.textContent =
+      "Get the ball and score!";
+
+  }, 1500);
+
+}
+
+
+/* ================= KEYBOARD ================= */
 
 document.addEventListener("keydown", function(event) {
 
   keys[event.key.toLowerCase()] = true;
 
+
+  if (!gameStarted) {
+    return;
+  }
+
+
   if (event.code === "Space") {
-    kickBall();
+
+    shoot();
+
+  }
+
+
+  if (event.key.toLowerCase() === "p") {
+
+    passBall();
+
   }
 
 });
+
 
 document.addEventListener("keyup", function(event) {
 
@@ -309,55 +801,260 @@ document.addEventListener("keyup", function(event) {
 });
 
 
-function kickBall() {
+/* ================= SHOOT ================= */
 
-  const distanceX = ballX - playerX;
-  const distanceY = ballY - playerY;
+function shoot() {
 
-  const distance = Math.sqrt(
-    distanceX * distanceX +
-    distanceY * distanceY
-  );
+  const dx =
+    ballX - playerX;
 
-  if (distance < 10) {
+  const dy =
+    ballY - playerY;
 
-    let directionX = distanceX;
-    let directionY = distanceY;
+  const distance =
+    Math.sqrt(dx * dx + dy * dy);
 
-    const length = Math.sqrt(
+
+  if (distance > 10) {
+
+    message.textContent =
+      "⚠️ Get closer to the ball!";
+
+    return;
+
+  }
+
+
+  let directionX = dx;
+
+  let directionY = dy;
+
+
+  const length =
+    Math.sqrt(
       directionX * directionX +
       directionY * directionY
     );
 
-    if (length > 0) {
 
-      directionX /= length;
-      directionY /= length;
+  if (length > 0) {
 
-    }
+    directionX /= length;
 
-    ballVelocityX = directionX * kickPower;
-    ballVelocityY = directionY * kickPower;
-
-    message.textContent = "💥 KICK!";
-
-    setTimeout(function() {
-
-      message.textContent =
-        "⚽ Get close to the ball and press SPACE!";
-
-    }, 700);
+    directionY /= length;
 
   }
 
+
+  /*
+    Extra power makes shooting
+    stronger than normal kicking.
+  */
+
+  ballVelocityX =
+    directionX * 5.5;
+
+  ballVelocityY =
+    directionY * 5.5;
+
+
+  message.textContent =
+    "💥 POWER SHOT!";
+
 }
 
+
+/* ================= PASS ================= */
+
+function passBall() {
+
+  const dx =
+    ballX - playerX;
+
+  const dy =
+    ballY - playerY;
+
+  const distance =
+    Math.sqrt(dx * dx + dy * dy);
+
+
+  if (distance > 10) {
+
+    message.textContent =
+      "⚠️ You need the ball to pass!";
+
+    return;
+
+  }
+
+
+  /*
+    Pass toward nearest teammate.
+  */
+
+  let nearest = teammates[0];
+
+  let nearestDistance = Infinity;
+
+
+  teammates.forEach(mate => {
+
+    const x =
+      mate.x - playerX;
+
+    const y =
+      mate.y - playerY;
+
+    const d =
+      Math.sqrt(x * x + y * y);
+
+
+    if (d < nearestDistance) {
+
+      nearestDistance = d;
+
+      nearest = mate;
+
+    }
+
+  });
+
+
+  const dx2 =
+    nearest.x - ballX;
+
+  const dy2 =
+    nearest.y - ballY;
+
+
+  const length =
+    Math.sqrt(dx2 * dx2 + dy2 * dy2);
+
+
+  if (length > 0) {
+
+    ballVelocityX =
+      (dx2 / length) * 3.5;
+
+    ballVelocityY =
+      (dy2 / length) * 3.5;
+
+  }
+
+
+  message.textContent =
+    "🅿️ PASS!";
+
+}
+
+
+/* ================= OPPONENT AI ================= */
+
+function updateEnemies() {
+
+  enemies.forEach(enemy => {
+
+    const dx =
+      ballX - enemy.x;
+
+    const dy =
+      ballY - enemy.y;
+
+
+    const distance =
+      Math.sqrt(dx * dx + dy * dy);
+
+
+    if (distance > 3) {
+
+      enemy.x +=
+        (dx / distance) * 0.35;
+
+      enemy.y +=
+        (dy / distance) * 0.35;
+
+    }
+
+
+    enemy.element.style.left =
+      enemy.x + "%";
+
+    enemy.element.style.top =
+      enemy.y + "%";
+
+
+    /*
+      If an opponent gets close
+      to the ball, they kick it.
+    */
+
+    if (distance < 5) {
+
+      const goalX = 2;
+
+      const goalY = 50;
+
+
+      const gx =
+        goalX - ballX;
+
+      const gy =
+        goalY - ballY;
+
+
+      const length =
+        Math.sqrt(gx * gx + gy * gy);
+
+
+      if (length > 0) {
+
+        ballVelocityX =
+          (gx / length) * 2.5;
+
+        ballVelocityY =
+          (gy / length) * 2.5;
+
+      }
+
+    }
+
+  });
+
+}
+
+
+/* ================= TEAMMATES ================= */
+
+function updateTeammates() {
+
+  teammates.forEach(mate => {
+
+    /*
+      Small movement so the team
+      feels alive.
+    */
+
+    mate.x +=
+      Math.sin(Date.now() / 1000 + mate.y) * 0.015;
+
+    mate.element.style.left =
+      mate.x + "%";
+
+    mate.element.style.top =
+      mate.y + "%";
+
+  });
+
+}
+
+
+/* ================= GOAL ================= */
 
 function checkGoal() {
 
   /*
     RIGHT GOAL
-    Blue FC scores
+    BLUE FC
   */
 
   if (
@@ -371,14 +1068,16 @@ function checkGoal() {
     blueScoreDisplay.textContent =
       blueScore;
 
-    goalScored("🔵 BLUE FC SCORES!");
+    goalScored(
+      "🔵 BLUE FC SCORES!"
+    );
 
   }
 
 
   /*
     LEFT GOAL
-    Red FC scores
+    RED FC
   */
 
   if (
@@ -392,55 +1091,177 @@ function checkGoal() {
     redScoreDisplay.textContent =
       redScore;
 
-    goalScored("🔴 RED FC SCORES!");
+    goalScored(
+      "🔴 RED FC SCORES!"
+    );
 
   }
 
 }
 
 
+/* ================= GOAL RESET ================= */
+
 function goalScored(text) {
 
-  message.textContent = "🎉 GOAL! " + text;
+  message.textContent =
+    "🎉 GOAL! " + text;
 
-  ballX = 52;
+
+  ballX = 50;
+
   ballY = 50;
 
   ballVelocityX = 0;
+
   ballVelocityY = 0;
 
-  setTimeout(function() {
+
+  playerX = 45;
+
+  playerY = 50;
+
+
+  setTimeout(() => {
 
     message.textContent =
-      "⚽ Play continues!";
+      "⚽ Keep playing!";
 
   }, 1500);
 
 }
 
 
+/* ================= TIMER ================= */
+
+setInterval(function() {
+
+  if (!gameStarted) {
+    return;
+  }
+
+
+  if (matchTime <= 0) {
+
+    endMatch();
+
+    return;
+
+  }
+
+
+  matchTime--;
+
+
+  const minutes =
+    Math.floor(matchTime / 60);
+
+  const seconds =
+    matchTime % 60;
+
+
+  timerDisplay.textContent =
+    String(minutes).padStart(2, "0")
+    + ":" +
+    String(seconds).padStart(2, "0");
+
+
+}, 1000);
+
+
+/* ================= END MATCH ================= */
+
+function endMatch() {
+
+  gameStarted = false;
+
+  endScreen.style.display = "flex";
+
+
+  finalScore.textContent =
+    blueScore + " - " + redScore;
+
+
+  if (blueScore > redScore) {
+
+    winner.textContent =
+      "🏆 BLUE FC WINS!";
+
+  }
+
+  else if (redScore > blueScore) {
+
+    winner.textContent =
+      "🏆 RED FC WINS!";
+
+  }
+
+  else {
+
+    winner.textContent =
+      "🤝 IT'S A DRAW!";
+
+  }
+
+}
+
+
+/* ================= MAIN GAME LOOP ================= */
+
 function update() {
 
-  // PLAYER MOVEMENT
+  if (!gameStarted) {
 
-  if (keys["w"] || keys["arrowup"]) {
+    requestAnimationFrame(update);
+
+    return;
+
+  }
+
+
+  /* PLAYER */
+
+  if (
+    keys["w"] ||
+    keys["arrowup"]
+  ) {
+
     playerY -= speed;
+
   }
 
-  if (keys["s"] || keys["arrowdown"]) {
+
+  if (
+    keys["s"] ||
+    keys["arrowdown"]
+  ) {
+
     playerY += speed;
+
   }
 
-  if (keys["a"] || keys["arrowleft"]) {
+
+  if (
+    keys["a"] ||
+    keys["arrowleft"]
+  ) {
+
     playerX -= speed;
+
   }
 
-  if (keys["d"] || keys["arrowright"]) {
+
+  if (
+    keys["d"] ||
+    keys["arrowright"]
+  ) {
+
     playerX += speed;
+
   }
 
 
-  // Keep player inside pitch
+  /* PLAYER BOUNDARIES */
 
   playerX =
     Math.max(2, Math.min(95, playerX));
@@ -456,49 +1277,53 @@ function update() {
     playerY + "%";
 
 
-  // BALL MOVEMENT
+  /* BALL */
 
   ballX += ballVelocityX;
+
   ballY += ballVelocityY;
 
 
-  // Friction
+  /* FRICTION */
 
   ballVelocityX *= 0.96;
+
   ballVelocityY *= 0.96;
 
 
-  // GOAL CHECK
-
-  checkGoal();
-
-
-  // Ball boundaries
+  /* BOUNDARIES */
 
   if (ballX < 0) {
 
     ballX = 0;
+
     ballVelocityX *= -0.6;
 
   }
+
 
   if (ballX > 100) {
 
     ballX = 100;
+
     ballVelocityX *= -0.6;
 
   }
 
+
   if (ballY < 1) {
 
     ballY = 1;
+
     ballVelocityY *= -0.6;
 
   }
 
+
   if (ballY > 96) {
 
     ballY = 96;
+
     ballVelocityY *= -0.6;
 
   }
@@ -511,15 +1336,26 @@ function update() {
     ballY + "%";
 
 
+  /* AI */
+
+  updateEnemies();
+
+  updateTeammates();
+
+
+  /* GOAL */
+
+  checkGoal();
+
+
   requestAnimationFrame(update);
 
 }
+
 
 update();
 
 </script>
 
-</body>
-</html>
 </body>
 </html>
